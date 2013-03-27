@@ -77,43 +77,8 @@ def data():
 
 #modified codes below
 
-def selectType():
-    form2 = SQLFORM.factory(SQLField('type', label='Select Your type',requires=IS_IN_SET(['student','faculty','staff','other'])), submit_button = 'Proceed to next step>>')
-    if form2.process().accepted:
-        session.flash = 'form accepted'
-        redirect(URL(r=request,f='register', vars={'type':request.vars['type']}))
-    elif form2.errors:
-        response.flash = 'form has errors'
-    else:
-        response.flash = 'please fill the form1'
-    return dict(form2=form2)
-
 def register():
-    #form2=SQLFORM.factory(dbUid.allResidents)
-    #table = dbUid.student
-    type = request.vars.type
-    typeDict = {'student':dbUid.student,'faculty':dbUid.faculty,'staff':dbUid.staff,'other':dbUid.relationship}
-    if type in typeDict:
-        table = typeDict[type]
-    else:
-        redirect(URL(typeError))
-    form2=SQLFORM.factory(dbUid.allResidents,table, keepvalues=True)
-    #form2.vars['type']=type	#need to make this field readonly
-    #if form2.process(onvalidation=generateUid).accepted:
-    if form2.process().accepted:
-        id = dbUid.allResidents.insert(**dbUid.allResidents._filter_fields(form2.vars))
-        form2.vars.allResidents=id
-        id = dbUid.student.insert(**table._filter_fields(form2.vars))
-        response.flash='Thanks for filling the form2'
-        redirect(URL('next'))
-    elif form2.errors:
-        response.flash = 'form2 has errors'
-    else:
-        if type in typeDict:
-            table = typeDict[type]
-        form2.vars['type']=type	#need to make this field readonly
-        response.flash = 'please fill the form2'
-    return dict(form2=form2)
+    return dict()
 
 # generate uid after all the field has been filled
 # modify this function to support your format of the UIDs
@@ -129,3 +94,73 @@ def next():
 	
 def typeError():
     return dict(message=T("Invalid Type selected"))
+
+def register_student():
+    form2=SQLFORM.factory(dbUid.allResidents,dbUid.student, keepvalues=True, fields=['uid','name','gender','emergencyPh','dob','fbLink','personalPh','interestedIn','bloodGroup','photo','webmailId','hostel','roomNo','rollNo'])
+    form2.vars['type']='student'	#need to make this field readonly
+    #if form2.process(onvalidation=generateUid).accepted:
+    if form2.process().accepted:
+        id = dbUid.allResidents.insert(**dbUid.allResidents._filter_fields(form2.vars))
+        form2.vars.allResidents=id
+        id = dbUid.student.insert(**dbUid.student._filter_fields(form2.vars))
+        response.flash='Thanks for filling the form2'
+        redirect(URL('next'))
+    elif form2.errors:
+        response.flash = 'form2 has errors'
+    else:
+        response.flash = 'please fill the form for student'
+    return dict(form2=form2)
+	
+def register_faculty():
+    form2=SQLFORM.factory(dbUid.allResidents,dbUid.faculty, keepvalues=True,fields=['uid','name','gender','emergencyPh','dob','fbLink','personalPh','interestedIn','bloodGroup','photo','webmailId','dept','post','homepageLink','officePh','blockNo','houseNo'])
+    form2.vars['type']='faculty'	#need to make this field readonly
+    #if form2.process(onvalidation=generateUid).accepted:
+    if form2.process().accepted:
+        id = dbUid.allResidents.insert(**dbUid.allResidents._filter_fields(form2.vars))
+        form2.vars.allResidents=id
+        id = dbUid.faculty.insert(**dbUid.faculty._filter_fields(form2.vars))
+        response.flash='Thanks for filling the form for faculty'
+        redirect(URL('next'))
+    elif form2.errors:
+        response.flash = 'form for faculty has errors'
+    else:
+        response.flash = 'please fill the form for faculty'
+    return dict(form2=form2)
+
+def register_staff():
+    form2=SQLFORM.factory(dbUid.allResidents,dbUid.staff, keepvalues=True,fields=['uid','name','gender','emergencyPh','dob','fbLink','personalPh','interestedIn','bloodGroup','photo','webmailId','address','post','section'])
+    form2.vars['type']='staff'	#need to make this field readonly
+    #if form2.process(onvalidation=generateUid).accepted:
+    if form2.process().accepted:
+        id = dbUid.allResidents.insert(**dbUid.allResidents._filter_fields(form2.vars))
+        form2.vars.allResidents=id
+        id = dbUid.staff.insert(**dbUid.staff._filter_fields(form2.vars))
+        response.flash='Thanks for filling the form for staff'
+        redirect(URL('next'))
+    elif form2.errors:
+        response.flash = 'form for staff has errors'
+    else:
+        response.flash = 'please fill the form for staff'
+    return dict(form2=form2)
+	
+def register_other():
+    form2=SQLFORM.factory(dbUid.allResidents,dbUid.relationship, keepvalues=True,fields=['uid','name','gender','emergencyPh','dob','fbLink','personalPh','interestedIn','bloodGroup','photo','relatedtoUid','relname','relnameInverse'])
+    form2.vars['type']='other'	#need to make this field readonly
+    #if form2.process(onvalidation=generateUid).accepted:
+    if form2.process().accepted:
+        id = dbUid.allResidents.insert(**dbUid.allResidents._filter_fields(form2.vars))
+        form2.vars.relationship=id
+        id = dbUid.relationship.insert(**dbUid.relationship._filter_fields(form2.vars))
+        response.flash='Thanks for filling the form for others'
+        redirect(URL('next'))
+    elif form2.errors:
+        response.flash = 'form for others has errors'
+    else:
+        response.flash = 'please fill the form for others'
+    return dict(form2=form2)
+
+def test():
+    return dict(test2=test2)
+
+def test2():
+    print "test2"
