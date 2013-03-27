@@ -1,0 +1,22 @@
+[2013-03-23 22:31:52] START
+[2013-03-23 22:32:42] EDIT firstApp/static/404.html: 1
+[2013-03-23 22:34:01] EDIT firstApp/static/404.html: 0
+[2013-03-23 22:34:13] EDIT firstApp/static/404.html: 0
+[2013-03-23 22:37:32] CREATE dbTry.py: 0
+[2013-03-23 22:38:38] EDIT firstApp/models/dbTry.py: 2
+[2013-03-23 22:45:32] EDIT firstApp/static/404.html: -1
+[2013-03-23 22:46:03] EDIT firstApp/static/404.html: 0
+[2013-03-23 22:46:42] EDIT firstApp/static/404.html: 0
+[2013-03-23 22:48:37] EDIT firstApp/static/404.html: 0
+[2013-03-23 22:49:51] EDIT firstApp/views/default/index.html: 0
+[2013-03-23 22:50:54] EDIT firstApp/views/default/index.html: 0
+[2013-03-23 22:57:22] EDIT firstApp/models/dbTry.py: 0
+[2013-03-23 22:57:48] EDIT firstApp/models/dbTry.py: 0
+[2013-03-23 22:59:39] EDIT firstApp/models/dbTry.py: 0
+[2013-03-23 23:01:35] EDIT firstApp/models/dbTry.py: 0
+[2013-03-23 23:04:19] EDIT firstApp/models/dbTry.py: 0
+[2013-03-23 23:05:21] EDIT firstApp/models/dbTry.py: 0
+[2013-03-23 23:36:08] EDIT firstApp/models/dbTry.py: 28
+[2013-03-23 23:36:47] EDIT firstApp/models/dbTry.py: -11
+[2013-03-23 23:37:28] EDIT firstApp/models/dbTry.py: 0
+[2013-03-23 23:38:50] EDIT firstApp/models/dbTry.py: 0

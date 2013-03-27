@@ -1,0 +1,154 @@
+timestamp: 2013-03-23T22:38:46.306360
+CREATE TABLE auth_user(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    first_name CHAR(128),
+    last_name CHAR(128),
+    email CHAR(512),
+    password CHAR(512),
+    registration_key CHAR(512),
+    reset_password_key CHAR(512),
+    registration_id CHAR(512)
+);
+success!
+timestamp: 2013-03-23T22:38:46.474682
+CREATE TABLE auth_group(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    role CHAR(512),
+    description TEXT
+);
+success!
+timestamp: 2013-03-23T22:38:46.621629
+CREATE TABLE auth_membership(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE
+);
+success!
+timestamp: 2013-03-23T22:38:46.745922
+CREATE TABLE auth_permission(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE,
+    name CHAR(512),
+    table_name CHAR(512),
+    record_id INTEGER
+);
+success!
+timestamp: 2013-03-23T22:38:46.896432
+CREATE TABLE auth_event(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    time_stamp TIMESTAMP,
+    client_ip CHAR(512),
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    origin CHAR(512),
+    description TEXT
+);
+success!
+timestamp: 2013-03-23T22:38:47.042187
+CREATE TABLE auth_cas(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    created_on TIMESTAMP,
+    service CHAR(512),
+    ticket CHAR(512),
+    renew CHAR(1)
+);
+success!
+timestamp: 2013-03-23T22:38:47.191660
+CREATE TABLE person(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name CHAR(512)
+);
+success!
+timestamp: 2013-03-23T22:57:27.647731
+CREATE TABLE person(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name CHAR(512)
+);
+success!
+timestamp: 2013-03-23T23:38:55.981321
+CREATE TABLE AllResidents(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    new5 INTEGER NOT NULL,
+    newfield INTEGER NOT NULL
+);
+success!
+timestamp: 2013-03-24T00:46:06.186707
+CREATE TABLE allResidents(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    uid INTEGER NOT NULL,
+    name CHAR(255) NOT NULL,
+    gender CHAR(512) NOT NULL,
+    type CHAR(512) NOT NULL,
+    emergencyPh CHAR(15) NOT NULL,
+    photo BLOB NOT NULL,
+    dob DATE NOT NULL,
+    fbLink CHAR(255),
+    personalPh CHAR(15),
+    privilegeNum CHAR(1) NOT NULL,
+    interestedIn TEXT NOT NULL,
+    bloodGroup CHAR(512) NOT NULL UNIQUE
+);
+timestamp: 2013-03-24T00:47:16.154355
+CREATE TABLE allResidents(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    uid INTEGER NOT NULL,
+    name CHAR(255) NOT NULL,
+    gender CHAR(512) NOT NULL,
+    type CHAR(512) NOT NULL,
+    emergencyPh CHAR(15) NOT NULL,
+    photo BLOB NOT NULL,
+    dob DATE NOT NULL,
+    fbLink CHAR(255),
+    personalPh CHAR(15),
+    privilegeNum CHAR(1) NOT NULL,
+    interestedIn TEXT NOT NULL,
+    bloodGroup CHAR(512) NOT NULL UNIQUE
+);
+timestamp: 2013-03-24T00:47:31.824338
+CREATE TABLE allResidents(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    uid INTEGER NOT NULL,
+    name CHAR(255) NOT NULL,
+    gender CHAR(512) NOT NULL,
+    type CHAR(512) NOT NULL,
+    emergencyPh CHAR(15) NOT NULL,
+    photo BLOB NOT NULL,
+    dob DATE NOT NULL,
+    fbLink CHAR(255),
+    personalPh CHAR(15),
+    privilegeNum CHAR(1) NOT NULL,
+    interestedIn TEXT NOT NULL,
+    bloodGroup CHAR(512) NOT NULL UNIQUE
+);
+timestamp: 2013-03-24T00:51:55.676554
+CREATE TABLE allResidents(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    uid INTEGER NOT NULL,
+    name CHAR(255) NOT NULL,
+    gender CHAR(512) NOT NULL,
+    type CHAR(512) NOT NULL,
+    emergencyPh CHAR(15) NOT NULL,
+    photo BLOB NOT NULL,
+    dob DATE NOT NULL,
+    fbLink CHAR(255),
+    personalPh CHAR(15),
+    privilegeNum CHAR(1) NOT NULL,
+    interestedIn TEXT NOT NULL,
+    bloodGroup CHAR(512) NOT NULL UNIQUE
+);
+timestamp: 2013-03-24T00:53:01.517870
+CREATE TABLE allResidents(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    uid INTEGER NOT NULL,
+    name CHAR(255) NOT NULL,
+    gender CHAR(512) NOT NULL,
+    type CHAR(512) NOT NULL,
+    emergencyPh CHAR(15) NOT NULL,
+    photo BLOB NOT NULL,
+    dob DATE NOT NULL,
+    fbLink CHAR(255),
+    personalPh CHAR(15),
+    privilegeNum CHAR(1) NOT NULL,
+    interestedIn TEXT NOT NULL,
+    bloodGroup CHAR(512) NOT NULL UNIQUE
+);

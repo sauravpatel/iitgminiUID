@@ -1,0 +1,23 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+<!--{{if 'message' in globals():}}-->
+<h3>{{=message}}</h3>
+
+<h4>{{=T('This is just a trial version of our project')}}</h4>
+<ol>
+	<li>
+	This would contain breif info about our project
+	</li>
+	<li>
+	This is the default front page which can be accessed without login
+	</li>
+</ol>
+<!--
+{{elif 'content' in globals():}}
+-->
+
+{{=content}}
+{{else:}}
+{{=BEAUTIFY(response._vars)}}
+{{pass}}
