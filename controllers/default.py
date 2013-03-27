@@ -94,15 +94,25 @@ def next():
 	
 def typeError():
     return dict(message=T("Invalid Type selected"))
-
+	
+# dbUid.allResidents,dbUid.student, 
 def register_student():
-    form2=SQLFORM.factory(dbUid.allResidents,dbUid.student, keepvalues=True, fields=['uid','name','gender','emergencyPh','dob','fbLink','personalPh','interestedIn','bloodGroup','photo','webmailId','hostel','roomNo','rollNo'])
-    form2.vars['type']='student'	#need to make this field readonly
-    #if form2.process(onvalidation=generateUid).accepted:
+    form2=SQLFORM.factory(dbUid.allResidents,dbUid.student, db.auth_user, keepvalues=True,
+    fields=['uid','first_name','last_name', 'password', 'gender','emergencyPh','dob','fbLink','personalPh',
+    'interestedIn','bloodGroup','photo','webmailId','hostel','roomNo','rollNo'])
+    form2.vars['type']='student'	
     if form2.process().accepted:
+	
+        # filling up so called redundant field
+        form2.vars['username']=form2.vars['uid']
+        form2.vars['email']=form2.vars['webmailId']
+        form2.vars['name']=str(form2.vars['first_name'])+' '+str(form2.vars['last_name'])
+		
         id = dbUid.allResidents.insert(**dbUid.allResidents._filter_fields(form2.vars))
         form2.vars.allResidents=id
         id = dbUid.student.insert(**dbUid.student._filter_fields(form2.vars))
+        form2.vars.student=id
+        id = db.auth_user.insert(**db.auth_user._filter_fields(form2.vars))
         response.flash='Thanks for filling the form2'
         redirect(URL('next'))
     elif form2.errors:
@@ -112,13 +122,23 @@ def register_student():
     return dict(form2=form2)
 	
 def register_faculty():
-    form2=SQLFORM.factory(dbUid.allResidents,dbUid.faculty, keepvalues=True,fields=['uid','name','gender','emergencyPh','dob','fbLink','personalPh','interestedIn','bloodGroup','photo','webmailId','dept','post','homepageLink','officePh','blockNo','houseNo'])
+    form2=SQLFORM.factory(dbUid.allResidents,dbUid.faculty, db.auth_user, keepvalues=True,
+	fields=['uid','first_name','last_name', 'password','gender','emergencyPh','dob','fbLink','personalPh',
+	'interestedIn','bloodGroup','photo','webmailId','dept','post','homepageLink','officePh','blockNo','houseNo'])
     form2.vars['type']='faculty'	#need to make this field readonly
     #if form2.process(onvalidation=generateUid).accepted:
     if form2.process().accepted:
+	
+        # filling up so called redundant field
+        form2.vars['username']=form2.vars['uid']
+        form2.vars['email']=form2.vars['webmailId']
+        form2.vars['name']=str(form2.vars['first_name'])+' '+str(form2.vars['last_name'])
+		
         id = dbUid.allResidents.insert(**dbUid.allResidents._filter_fields(form2.vars))
         form2.vars.allResidents=id
         id = dbUid.faculty.insert(**dbUid.faculty._filter_fields(form2.vars))
+        form2.vars.student=id
+        id = db.auth_user.insert(**db.auth_user._filter_fields(form2.vars))
         response.flash='Thanks for filling the form for faculty'
         redirect(URL('next'))
     elif form2.errors:
@@ -128,13 +148,23 @@ def register_faculty():
     return dict(form2=form2)
 
 def register_staff():
-    form2=SQLFORM.factory(dbUid.allResidents,dbUid.staff, keepvalues=True,fields=['uid','name','gender','emergencyPh','dob','fbLink','personalPh','interestedIn','bloodGroup','photo','webmailId','address','post','section'])
+    form2=SQLFORM.factory(dbUid.allResidents,dbUid.staff, db.auth_user, keepvalues=True,
+	fields=['uid','first_name','last_name', 'password','gender','emergencyPh','dob','fbLink','personalPh',
+	'interestedIn','bloodGroup','photo','webmailId','address','post','section'])
     form2.vars['type']='staff'	#need to make this field readonly
     #if form2.process(onvalidation=generateUid).accepted:
     if form2.process().accepted:
+	
+        # filling up so called redundant field
+        form2.vars['username']=form2.vars['uid']
+        form2.vars['email']=form2.vars['webmailId']
+        form2.vars['name']=str(form2.vars['first_name'])+' '+str(form2.vars['last_name'])
+		
         id = dbUid.allResidents.insert(**dbUid.allResidents._filter_fields(form2.vars))
         form2.vars.allResidents=id
         id = dbUid.staff.insert(**dbUid.staff._filter_fields(form2.vars))
+        form2.vars.student=id
+        id = db.auth_user.insert(**db.auth_user._filter_fields(form2.vars))
         response.flash='Thanks for filling the form for staff'
         redirect(URL('next'))
     elif form2.errors:
@@ -144,13 +174,23 @@ def register_staff():
     return dict(form2=form2)
 	
 def register_other():
-    form2=SQLFORM.factory(dbUid.allResidents,dbUid.relationship, keepvalues=True,fields=['uid','name','gender','emergencyPh','dob','fbLink','personalPh','interestedIn','bloodGroup','photo','relatedtoUid','relname','relnameInverse'])
+    form2=SQLFORM.factory(dbUid.allResidents,dbUid.relationship, db.auth_user, keepvalues=True,
+	fields=['uid','first_name','last_name', 'password','gender','emergencyPh','dob','fbLink','personalPh','interestedIn',
+	'bloodGroup','photo','relatedtoUid','relname','relnameInverse'])
     form2.vars['type']='other'	#need to make this field readonly
     #if form2.process(onvalidation=generateUid).accepted:
     if form2.process().accepted:
+	
+        # filling up so called redundant field 
+        form2.vars['username']=form2.vars['uid']
+        form2.vars['email']='admin@gmail.com'
+        form2.vars['name']=str(form2.vars['first_name'])+' '+str(form2.vars['last_name'])
+
         id = dbUid.allResidents.insert(**dbUid.allResidents._filter_fields(form2.vars))
         form2.vars.relationship=id
         id = dbUid.relationship.insert(**dbUid.relationship._filter_fields(form2.vars))
+        form2.vars.student=id
+        id = db.auth_user.insert(**db.auth_user._filter_fields(form2.vars))
         response.flash='Thanks for filling the form for others'
         redirect(URL('next'))
     elif form2.errors:

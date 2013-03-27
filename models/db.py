@@ -44,7 +44,9 @@ auth = Auth(db)
 crud, service, plugins = Crud(db), Service(), PluginManager()
 
 ## create all tables needed by auth if not custom tables
-auth.define_tables(username=False, signature=False)
+auth.define_tables(username=True, signature=False)
+
+db.auth_user.username.requires = IS_NOT_IN_DB(db, db.auth_user.username)
 
 ## configure email
 mail = auth.settings.mailer

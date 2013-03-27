@@ -152,3 +152,31 @@ CREATE TABLE allResidents(
     interestedIn TEXT NOT NULL,
     bloodGroup CHAR(512) NOT NULL UNIQUE
 );
+timestamp: 2013-03-27T20:28:17.692000
+ALTER TABLE auth_user ADD city CHAR(128);
+timestamp: 2013-03-27T20:28:17.824000
+ALTER TABLE auth_user ADD postcode CHAR(128);
+timestamp: 2013-03-27T20:28:17.919000
+ALTER TABLE auth_user ADD address CHAR(256);
+timestamp: 2013-03-27T20:30:38.823000
+ALTER TABLE auth_user ADD name CHAR(128);
+timestamp: 2013-03-27T20:30:38.902000
+ALTER TABLE auth_user ADD uid23 CHAR(128) UNIQUE;
+timestamp: 2013-03-27T20:31:56.163000
+ALTER TABLE auth_user ADD uid23 CHAR(128);
+timestamp: 2013-03-27T20:33:52.591000
+ALTER TABLE auth_user ADD uniqueid CHAR(128);
+timestamp: 2013-03-27T20:38:23.267000
+ALTER TABLE auth_user ADD yourid CHAR(128);
+timestamp: 2013-03-27T20:38:39.021000
+ALTER TABLE auth_user ADD yuid CHAR(128);
+timestamp: 2013-03-27T20:39:01.591000
+ALTER TABLE auth_user ADD mid CHAR(128);
+timestamp: 2013-03-27T20:39:25.136000
+ALTER TABLE auth_user ADD userid CHAR(128);
+timestamp: 2013-03-27T21:16:28.493000
+ALTER TABLE auth_user ADD username CHAR(128) UNIQUE;
+timestamp: 2013-03-27T21:17:16.192000
+ALTER TABLE auth_user ADD username CHAR(128) UNIQUE;
+timestamp: 2013-03-27T21:18:42.066000
+ALTER TABLE auth_user ADD username CHAR(128);

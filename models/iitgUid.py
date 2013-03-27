@@ -4,8 +4,8 @@ dbUid.define_table('allResidents',
     Field('id', 'id'),                         # (`id` int(11) NOT NULL AUTO_INCREMENT,)
     Field('uid', 'integer', notnull=True),                   # randomINT  (`uid` int(15) NOT NULL COMMENT 'randomINT',)
     Field('name', 'string', notnull=True),                   # (`name` varchar(255) NOT NULL,)
-    Field('gender', 'string', notnull=True,requires=IS_IN_SET(['male','female'])),                 # (`gender` enum('male','female') NOT NULL,)
-    Field('type', 'string', notnull=True,requires=IS_IN_SET(['student','faculty','staff','other'])),                   # (`type` enum('stud','fac','staff','other') NOT NULL,)
+    Field('gender', 'string', notnull=True,requires=IS_IN_SET(['Male','Female']), default=''),                 # (`gender` enum('male','female') NOT NULL,)
+    Field('type', 'string', notnull=True,requires=IS_IN_SET(['Student','Faculty','Staff','Other'])),                   # (`type` enum('stud','fac','staff','other') NOT NULL,)
     Field('emergencyPh', 'string', notnull=True),            # (`emergencyPh` varchar(15) NOT NULL,)
     Field('photo', 'blob', notnull=True),                    # 1 mb max size  (`photo` longblob NOT NULL COMMENT '1 mb max size',)
     Field('dob', 'date', notnull=True),                      # (`dob` date NOT NULL,)
@@ -13,7 +13,7 @@ dbUid.define_table('allResidents',
     Field('personalPh', 'string', notnull=False),             # (`personalPh` varchar(15) DEFAULT NULL,)
     Field('privilegeNum', 'blob', notnull=True),             # (`privilegeNum` binary(60) NOT NULL,)
     Field('interestedIn', 'text', notnull=True),             # (`interestedIn` text NOT NULL,)
-    Field('bloodGroup', 'string', requires = IS_IN_SET(['AB+','AB-','O-','O+','A+','A-','B+','B-'])),             # (`bloodGroup` enum('AB+','AB-','O-','O+','A+','A-','B+','B-','other') NOT NULL,)
+    Field('bloodGroup', 'string', requires = IS_IN_SET(['AB+','AB-','O-','O+','A+','A-','B+','B-']), default=''),             # (`bloodGroup` enum('AB+','AB-','O-','O+','A+','A-','B+','B-','other') NOT NULL,)
     )
 
 dbUid.define_table('faculty', 
@@ -76,3 +76,11 @@ dbUid.define_table('vehicle',
     Field('owneruid', 'integer', notnull=True),              # (`owneruid` int(15) NOT NULL,)
     Field('instiRegNo', 'string', notnull=True),             # (`instiRegNo` varchar(15) NOT NULL,)
     )
+
+	
+
+dbUid.allResidents.uid.requires = IS_NOT_IN_DB(dbUid, dbUid.allResidents.uid)
+dbUid.student.webmailId.requires = IS_NOT_IN_DB(dbUid, dbUid.student.webmailId)
+dbUid.faculty.webmailId.requires = IS_NOT_IN_DB(dbUid, dbUid.faculty.webmailId)
+dbUid.staff.webmailId.requires = IS_NOT_IN_DB(dbUid, dbUid.staff.webmailId)
+dbUid.student.rollNo.requires = IS_NOT_IN_DB(dbUid, dbUid.student.rollNo)
