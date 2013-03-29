@@ -36,17 +36,33 @@ def user():
         @auth.requires_permission('read','table name',record_id)
     to decorate functions that need access control
     """
+    if request.args(0)=='profile':
+        redirect(URL(profile))
     return dict(form=auth())
-
-
-
+	
+"""
+crud is defined in 'db.py' and crud2 is defined in 'iitgUid.py'
+"""
+@auth.requires_login()
+def profile():
+    form=crud.read(db.auth_user,auth.user.id)
+    resident=dbUid.allResidents
+    uid=resident.uid
+    q = uid==auth.user.username
+    s = dbUid(q)
+    rows = s.select()
+    for row in rows:
+        residentId = row.id
+        response.flash = T("Hello "+row.name)
+    form2=crud2.update(dbUid.allResidents,residentId,deletable=False)
+    return dict(form=form, form2=form2)
+    
 def download():
     """
     allows downloading of uploaded files
     http://..../[app]/default/download/[filename]
     """
     return response.download(request, db)
-
 
 def call():
     """
@@ -56,7 +72,6 @@ def call():
     supports xml, json, xmlrpc, jsonrpc, amfrpc, rss, csv
     """
     return service()
-
 
 @auth.requires_signature()
 def data():
@@ -87,8 +102,7 @@ def generateUid(form):
 
 def type():
     return dict()
-	
-	
+
 def next():
     return dict()
 	
@@ -105,6 +119,7 @@ def register_student():
 	
         # filling up so called redundant field
         form2.vars['username']=form2.vars['uid']
+        form2.vars['registration_key']='pending'
         form2.vars['email']=form2.vars['webmailId']
         form2.vars['name']=str(form2.vars['first_name'])+' '+str(form2.vars['last_name'])
 		
@@ -131,6 +146,7 @@ def register_faculty():
 	
         # filling up so called redundant field
         form2.vars['username']=form2.vars['uid']
+        form2.vars['registration_key']='pending'
         form2.vars['email']=form2.vars['webmailId']
         form2.vars['name']=str(form2.vars['first_name'])+' '+str(form2.vars['last_name'])
 		
@@ -157,6 +173,7 @@ def register_staff():
 	
         # filling up so called redundant field
         form2.vars['username']=form2.vars['uid']
+        form2.vars['registration_key']='pending'
         form2.vars['email']=form2.vars['webmailId']
         form2.vars['name']=str(form2.vars['first_name'])+' '+str(form2.vars['last_name'])
 		
@@ -183,6 +200,7 @@ def register_other():
 	
         # filling up so called redundant field 
         form2.vars['username']=form2.vars['uid']
+        form2.vars['registration_key']='pending'
         form2.vars['email']='admin@gmail.com'
         form2.vars['name']=str(form2.vars['first_name'])+' '+str(form2.vars['last_name'])
 

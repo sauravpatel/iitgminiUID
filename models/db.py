@@ -56,7 +56,7 @@ mail.settings.login = 'username:password'
 
 ## configure auth policy
 auth.settings.registration_requires_verification = False
-auth.settings.registration_requires_approval = False
+auth.settings.registration_requires_approval = True
 auth.settings.reset_password_requires_verification = True
 
 ## if you need to use OpenID, Facebook, MySpace, Twitter, Linkedin, etc.
@@ -83,3 +83,5 @@ use_janrain(auth, filename='private/janrain.key')
 
 ## after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
+
+db.auth_user.password.requires = [IS_STRONG(min=5, special=0, upper=0), CRYPT()]

@@ -7,7 +7,7 @@ dbUid.define_table('allResidents',
     Field('gender', 'string', notnull=True,requires=IS_IN_SET(['Male','Female']), default=''),                 # (`gender` enum('male','female') NOT NULL,)
     Field('type', 'string', notnull=True,requires=IS_IN_SET(['Student','Faculty','Staff','Other'])),                   # (`type` enum('stud','fac','staff','other') NOT NULL,)
     Field('emergencyPh', 'string', notnull=True),            # (`emergencyPh` varchar(15) NOT NULL,)
-    Field('photo', 'blob', notnull=True),                    # 1 mb max size  (`photo` longblob NOT NULL COMMENT '1 mb max size',)
+    Field('photo', 'upload', notnull=True, autodelete=True),                    # 1 mb max size  (`photo` longblob NOT NULL COMMENT '1 mb max size',)
     Field('dob', 'date', notnull=True),                      # (`dob` date NOT NULL,)
     Field('fbLink', 'string', notnull=False),                 # (`fbLink` varchar(255) DEFAULT NULL,)
     Field('personalPh', 'string', notnull=False),             # (`personalPh` varchar(15) DEFAULT NULL,)
@@ -77,10 +77,14 @@ dbUid.define_table('vehicle',
     Field('instiRegNo', 'string', notnull=True),             # (`instiRegNo` varchar(15) NOT NULL,)
     )
 
-	
+crud2=Crud(dbUid)
+crud2.messages.submit_button = 'Save changes'
+crud2.messages.record_updated = 'Record updated'
+
 
 dbUid.allResidents.uid.requires = IS_NOT_IN_DB(dbUid, dbUid.allResidents.uid)
 dbUid.student.webmailId.requires = IS_NOT_IN_DB(dbUid, dbUid.student.webmailId)
 dbUid.faculty.webmailId.requires = IS_NOT_IN_DB(dbUid, dbUid.faculty.webmailId)
 dbUid.staff.webmailId.requires = IS_NOT_IN_DB(dbUid, dbUid.staff.webmailId)
 dbUid.student.rollNo.requires = IS_NOT_IN_DB(dbUid, dbUid.student.rollNo)
+dbUid.student.webmailId.requires = [IS_EMAIL(error_message=auth.messages.invalid_email),IS_NOT_IN_DB(db, 'auth_user.email')]
