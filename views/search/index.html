@@ -1,0 +1,23 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+<script src="{{=URL('static','js/search.js')}}"></script>
+
+<!--{{if 'message' in globals():}}-->
+<h3>{{=message}}</h3>
+
+<form action="" name="criteriaForm" >
+<input type="checkbox" name="student" value="student" onchange="getSubField()"> Student <br>
+<input type="checkbox" name="faculty" value="faculty" onchange="getSubField()"> Faculty <br>
+<input type="checkbox" name="staff" value="staff" onchange="getSubField()"> Staff <br> 
+<input type="checkbox" name="others" value="others" onchange="getSubField()"> Others <br> 
+</form>
+
+
+<!--
+{{elif 'content' in globals():}}
+-->
+{{=content}}
+{{else:}}
+{{=BEAUTIFY(response._vars)}}
+{{pass}}

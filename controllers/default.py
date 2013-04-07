@@ -39,13 +39,13 @@ def user():
     if request.args(0)=='profile':
         redirect(URL(profile))
     return dict(form=auth())
-	
+
 """
 crud is defined in 'db.py' and crud2 is defined in 'iitgUid.py'
 """
 @auth.requires_login()
 def profile():
-    form=crud.read(db.auth_user,auth.user.id)
+    form=SQLFORM(db.auth_user,auth.user.id, fields=['first_name','last_name'])
     resident=dbUid.allResidents
     uid=resident.uid
     q = uid==auth.user.username
@@ -53,10 +53,48 @@ def profile():
     rows = s.select()
     for row in rows:
         residentId = row.id
+        residentType = row.type
+        residentType = "Student"
         response.flash = T("Hello "+row.name)
-    form2=crud2.update(dbUid.allResidents,residentId,deletable=False)
-    return dict(form=form, form2=form2)
-    
+    form.append(SQLFORM(dbUid.allResidents,residentId,deletable=False))
+    if( residentType == "Student" ):
+        resident=dbUid.student
+        uid=resident.uid
+        q = uid==auth.user.username
+        s = dbUid(q)
+        rows = s.select()
+        for row in rows:
+            studentId = row.id
+        form.append(SQLFORM(dbUid.student,studentId,deletable=False))
+    if( residentType == "Faculty" ):
+        resident=dbUid.faculty
+        uid=resident.uid
+        q = uid==auth.user.username
+        s = dbUid(q)
+        rows = s.select()
+        for row in rows:
+            facultyId = row.id
+        form2.append(crud2.update(dbUid.faculty,facultyId,deletable=False))
+    if( residentType == "Staff" ):
+        resident=dbUid.staff
+        uid=resident.uid
+        q = uid==auth.user.username
+        s = dbUid(q)
+        rows = s.select()
+        for row in rows:
+            staffId = row.id
+        form2.append(crud2.update(dbUid.staff,staffId,deletable=False))
+    if( residentType == "Other" ):
+        resident=dbUid.relationship
+        uid=resident.uid
+        q = uid==auth.user.username
+        s = dbUid(q)
+        rows = s.select()
+        for row in rows:
+            relationshipId = row.id
+        form2.append(crud2.update(dbUid.relationship,relationshipId,deletable=False))
+    return dict(form=form)
+
 def download():
     """
     allows downloading of uploaded files
@@ -105,24 +143,24 @@ def type():
 
 def next():
     return dict()
-	
+
 def typeError():
     return dict(message=T("Invalid Type selected"))
-	
-# dbUid.allResidents,dbUid.student, 
+
+# dbUid.allResidents,dbUid.student,
 def register_student():
     form2=SQLFORM.factory(dbUid.allResidents,dbUid.student, db.auth_user, keepvalues=True,
     fields=['uid','first_name','last_name', 'password', 'gender','emergencyPh','dob','fbLink','personalPh',
     'interestedIn','bloodGroup','photo','webmailId','hostel','roomNo','rollNo'])
-    form2.vars['type']='student'	
+    form2.vars['type']='student'
     if form2.process().accepted:
-	
+
         # filling up so called redundant field
         form2.vars['username']=form2.vars['uid']
         form2.vars['registration_key']='pending'
         form2.vars['email']=form2.vars['webmailId']
         form2.vars['name']=str(form2.vars['first_name'])+' '+str(form2.vars['last_name'])
-		
+
         id = dbUid.allResidents.insert(**dbUid.allResidents._filter_fields(form2.vars))
         form2.vars.allResidents=id
         id = dbUid.student.insert(**dbUid.student._filter_fields(form2.vars))
@@ -135,7 +173,7 @@ def register_student():
     else:
         response.flash = 'please fill the form for student'
     return dict(form2=form2)
-	
+
 def register_faculty():
     form2=SQLFORM.factory(dbUid.allResidents,dbUid.faculty, db.auth_user, keepvalues=True,
 	fields=['uid','first_name','last_name', 'password','gender','emergencyPh','dob','fbLink','personalPh',
@@ -143,13 +181,13 @@ def register_faculty():
     form2.vars['type']='faculty'	#need to make this field readonly
     #if form2.process(onvalidation=generateUid).accepted:
     if form2.process().accepted:
-	
+
         # filling up so called redundant field
         form2.vars['username']=form2.vars['uid']
         form2.vars['registration_key']='pending'
         form2.vars['email']=form2.vars['webmailId']
         form2.vars['name']=str(form2.vars['first_name'])+' '+str(form2.vars['last_name'])
-		
+
         id = dbUid.allResidents.insert(**dbUid.allResidents._filter_fields(form2.vars))
         form2.vars.allResidents=id
         id = dbUid.faculty.insert(**dbUid.faculty._filter_fields(form2.vars))
@@ -170,13 +208,13 @@ def register_staff():
     form2.vars['type']='staff'	#need to make this field readonly
     #if form2.process(onvalidation=generateUid).accepted:
     if form2.process().accepted:
-	
+
         # filling up so called redundant field
         form2.vars['username']=form2.vars['uid']
         form2.vars['registration_key']='pending'
         form2.vars['email']=form2.vars['webmailId']
         form2.vars['name']=str(form2.vars['first_name'])+' '+str(form2.vars['last_name'])
-		
+
         id = dbUid.allResidents.insert(**dbUid.allResidents._filter_fields(form2.vars))
         form2.vars.allResidents=id
         id = dbUid.staff.insert(**dbUid.staff._filter_fields(form2.vars))
@@ -189,7 +227,7 @@ def register_staff():
     else:
         response.flash = 'please fill the form for staff'
     return dict(form2=form2)
-	
+
 def register_other():
     form2=SQLFORM.factory(dbUid.allResidents,dbUid.relationship, db.auth_user, keepvalues=True,
 	fields=['uid','first_name','last_name', 'password','gender','emergencyPh','dob','fbLink','personalPh','interestedIn',
@@ -197,8 +235,8 @@ def register_other():
     form2.vars['type']='other'	#need to make this field readonly
     #if form2.process(onvalidation=generateUid).accepted:
     if form2.process().accepted:
-	
-        # filling up so called redundant field 
+
+        # filling up so called redundant field
         form2.vars['username']=form2.vars['uid']
         form2.vars['registration_key']='pending'
         form2.vars['email']='admin@gmail.com'

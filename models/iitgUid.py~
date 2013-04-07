@@ -1,4 +1,4 @@
-dbUid = DAL('mysql://root:root@localhost/iitgUidW2P', migrate=False)
+dbUid = DAL('mysql://root:@localhost/iitgUidW2P', migrate=False)
 
 dbUid.define_table('allResidents', 
     Field('id', 'id'),                         # (`id` int(11) NOT NULL AUTO_INCREMENT,)
@@ -7,7 +7,7 @@ dbUid.define_table('allResidents',
     Field('gender', 'string', notnull=True,requires=IS_IN_SET(['Male','Female']), default=''),                 # (`gender` enum('male','female') NOT NULL,)
     Field('type', 'string', notnull=True,requires=IS_IN_SET(['Student','Faculty','Staff','Other'])),                   # (`type` enum('stud','fac','staff','other') NOT NULL,)
     Field('emergencyPh', 'string', notnull=True),            # (`emergencyPh` varchar(15) NOT NULL,)
-    Field('photo', 'upload', notnull=True, autodelete=True, uploadfolder='uploads'),                    # 1 mb max size  (`photo` longblob NOT NULL COMMENT '1 mb max size',)
+    Field('photo', 'upload', notnull=True, autodelete=True),                    # 1 mb max size  (`photo` longblob NOT NULL COMMENT '1 mb max size',)
     Field('dob', 'date', notnull=True),                      # (`dob` date NOT NULL,)
     Field('fbLink', 'string', notnull=False),                 # (`fbLink` varchar(255) DEFAULT NULL,)
     Field('personalPh', 'string', notnull=False),             # (`personalPh` varchar(15) DEFAULT NULL,)
