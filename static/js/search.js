@@ -5,8 +5,7 @@ function getSubField()
 		faculty : 0,
 		staff : 0,
 		others : 0
-	};
-	if( document.criteriaForm.student.checked == true ){
+	};	if( document.criteriaForm.student.checked == true ){
 		selected.student = true;
 		alert( "You have checked student." );
 	}

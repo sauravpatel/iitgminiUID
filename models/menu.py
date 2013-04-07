@@ -8,7 +8,7 @@
 #response.logo = A(B('web',SPAN(2),'py'),XML('&trade;&nbsp;'),
 #                  _class="brand",_href="http://www.web2py.com/")
 response.logo = A(B(SPAN('IITG'),'-Mini','UID'),
-                  _class="brand",_href="http://localhost:8000/iitgUidProject/default/index")
+                  _class="brand",_href="http://localhost:8000/iitgminiUID/default/index")
 
 #response.title = ' '.join(
 #    word.capitalize() for word in request.application.split('_'))
