@@ -12,7 +12,7 @@ function addAllInputs(divName, inputType){
             counterText++;
             break;
         case 'radio':
-            newdiv.innerHTML = "Entry " + (counterRadioButton + 1) + " <br><input type='radio' name='myRadioButtons"+(counterRadioButton+1) +"'>";
+            newdiv.innerHTML = "Entry " + (counterRadioButton + 1) + " <br><input type='radio' name='myRadioButtons[]'>";
             counterRadioButton++;
             break;
         case 'checkbox':
@@ -55,7 +55,7 @@ function createNewElement(id)
     newdiv.setAttribute("type", "text");
     newdiv.style.width = "300px";
     //newdiv.innerHTML = "is " + " <br><input type='text' id=" + ID + " name=" + ID + ">";
-    //newdiv.innerHTML = "";
+    newdiv.innerHTML = "is";
     document.queryform.appendChild(newdiv);
     addAllInputs( 'form1', 'checkbox' );
     //}
@@ -91,19 +91,18 @@ function createNewOption()
     document.queryform.appendChild(select);
 }
 
-//
-//function searchquery( formElement )
-//{
-//    alert("IN SEARCH SUBMIT");
-//    var inputs, selects, index;
-//    inputs = document.getElementsByTagName('input');
-//    selects = document.getElementsByTagName('select');
-//    for (index = 0; index < inputs.length; ++index)
-//    {
-//        // deal with inputs[index] element.
-//        var name = inputs[index];
-//        alert( name );
-//    }
-//
-//    return true;
-//}
+function searchquery( formElement )
+{
+    alert("IN SEARCH SUBMIT");
+    var inputs, selects, index;
+    inputs = document.getElementsByTagName('input');
+    selects = document.getElementsByTagName('select');
+    for (index = 0; index < inputs.length; ++index)
+    {
+        // deal with inputs[index] element.
+        var name = inputs[index];
+        alert( name );
+    }
+
+    return true;
+}
