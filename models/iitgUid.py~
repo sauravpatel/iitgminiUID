@@ -1,4 +1,4 @@
-dbUid = DAL('mysql://root:root@localhost/iitgUidW2P', migrate=False)
+dbUid = DAL('mysql://root:@localhost/iitgUidW2P', migrate=False)
 
 dbUid.define_table('allResidents', 
     Field('id', 'id'),                         # (`id` int(11) NOT NULL AUTO_INCREMENT,)
