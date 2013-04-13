@@ -1,6 +1,7 @@
-var divCounter = 1;
+{var divCounter = 1;
 var nestCounter = 0;
 var subdivCounter = 0;
+var nestSubdivCounter = 0;
 var whereCounter = 0;
 var inputCounter = 0;
 var counter = 0;
@@ -8,6 +9,15 @@ var counterText = 0;
 var counterRadioButton = 0;
 var counterCheckBox = 0;
 var counterTextArea = 0;
+}
+
+// Global variables for JSON creation
+
+window.query = new Object();
+window.queryStack = new Object();
+var currList;
+var curIndex;
+
 function addAllInputs(divName, inputType){
     var newdiv = document.createElement('div');
     switch(inputType) {
@@ -38,43 +48,42 @@ function createNewElement(callerID,callerDivID)
     var inputID = "input" + callerID;
     var inputType = "text"
     var attribute = document.getElementById( callerID );
-    //if ( attribute){
-        var attributeType = attribute.options[attribute.selectedIndex].text;
-        // give special treatement to some attributes
-        if ( attributeType.search( 'age' ) != -1 ){
-            var options = new Array("==","<",">");
-            createDropdown( callerDivID, inputID, options, "80px" );
-        }
-        if ( attributeType.search( 'gender' ) != -1 ){
-            inputRequired = false;
-            var options = new Array("male","female");
-            createDropdown( callerDivID, inputID, options, "300px" );
-        }
-        if ( attributeType.search( 'type' ) != -1 ){
-            inputRequired = false;
-            var options = new Array("student","faculty","staff","others");
-            createDropdown( callerDivID, inputID, options, "300px" );
-        }
-        if ( attributeType.search( 'bloodGroup' ) != -1 ){
-            inputRequired = false;
-            var options = new Array("AB+","AB-","O-","O+","A+","A-","B+","B-","Bombay");
-            createDropdown( callerDivID, inputID, options, "300px" );
-        }
-        if ( attributeType.search( 'hostel' ) != -1 ){
-            inputRequired = false;
-            var options = new Array("Barak","Brahmaputra","Dibang","Dihing","Kameng","Kapili","Manas","Siang","Subansiri","Umiam");
-            createDropdown( callerDivID, inputID, options, "300px" );
-        }
-        if ( attributeType.search( 'post' ) != -1 ){
-            inputRequired = false;
-            var options = new Array("assistant Professor","Associate","Professor");
-            createDropdown( callerDivID, inputID, options, "300px" );
-        }
-        if ( attributeType.search( 'dob' ) != -1 ){
-            inputType = "date";
-        }
+    var attributeType = attribute.options[attribute.selectedIndex].text;
+    // give special treatement to some attributes
+    if ( attributeType.search( 'age' ) != -1 ){
+        var options = new Array("==","<",">");
+        createDropdown( callerDivID, inputID, options, "80px" );
+    }
+    if ( attributeType.search( 'gender' ) != -1 ){
+        inputRequired = false;
+        var options = new Array("male","female");
+        createDropdown( callerDivID, inputID, options, "300px" );
+    }
+    if ( attributeType.search( 'type' ) != -1 ){
+        inputRequired = false;
+        var options = new Array("student","faculty","staff","others");
+        createDropdown( callerDivID, inputID, options, "300px" );
+    }
 
-    //}
+    if ( attributeType.search( 'bloodGroup' ) != -1 ){
+        inputRequired = false;
+        var options = new Array("AB+","AB-","O-","O+","A+","A-","B+","B-","Bombay");
+        createDropdown( callerDivID, inputID, options, "300px" );
+    }
+    if ( attributeType.search( 'hostel' ) != -1 ){
+        inputRequired = false;
+        var options = new Array("Barak","Brahmaputra","Dibang","Dihing","Kameng","Kapili","Manas","Siang","Subansiri","Umiam");
+        createDropdown( callerDivID, inputID, options, "300px" );
+    }
+    if ( attributeType.search( 'post' ) != -1 ){
+        inputRequired = false;
+        var options = new Array("assistant Professor","Associate","Professor");
+        createDropdown( callerDivID, inputID, options, "300px" );
+    }
+    if ( attributeType.search( 'dob' ) != -1 ){
+        inputType = "date";
+    }
+
     if(document.getElementById(inputID) && inputRequired){
         // code to change input type needs to be WRITTEN here
         alert( "You cannot change selection now.");
@@ -95,8 +104,7 @@ function createNewElement(callerID,callerDivID)
         var logicID = "logic"+ callerID;
         var option = new Array('','AND','OR');
         createDropdown( callerDivID, logicID, option, "100px");
-        alert("TT    :" + callerDivID);
-        document.getElementById(logicID).onchange = function(){createNewOption(callerDivID)};
+        document.getElementById(logicID).onchange = function(){createNewOption(callerDivID, attributeType, inputID, logicID)};
         var br = document.createElement("br");
         document.getElementById(callerDivID).appendChild( br );
         //createNewOption();
@@ -105,9 +113,15 @@ function createNewElement(callerID,callerDivID)
     }
 }
 
-function createNewOption(callerDivID)
+function createNewOption(callerDivID, attributeType, inputID, logicID)
 {
-    alert(callerDivID);
+    makeQuery( attributeType, inputID, logicID);
+    var newDivID = "queryDiv" + callerDivID;
+    var newDiv = document.createElement('div');
+    newDiv.setAttribute("id",newDivID);
+    newDiv.setAttribute("name", newDivID);
+    document.getElementById(callerDivID).appendChild(newDiv);
+    
     whereCounter++;
     var whereID = "where" + callerDivID + whereCounter;
     //ID = "where11";
@@ -116,8 +130,8 @@ function createNewOption(callerDivID)
     for (var i=0;i<x.length;i++){ 
         fields[i]=x.options[i].text;
     }
-    createDropdown(callerDivID, whereID, fields, "220px");
-    document.getElementById(whereID).onchange = function(){createNewElement(whereID, callerDivID)};
+    createDropdown(newDivID, whereID, fields, "220px");
+    document.getElementById(whereID).onchange = function(){createNewElement(whereID, newDivID)};
 }
 
 
@@ -148,63 +162,56 @@ function insertQuery(query)
     //document.getElementById(textFieldID).style.border = "4px solid red";
 }
 
-function startNest(callerDivID)
+function startNest(callerID, callerDivID)
 {
+    window.query1 = new Object();
+    //var oldquery=document.getElementById("unique");
+    //oldquery.value = oldquery.value + "[ ";
     nestCounter++;
     subdivCounter++;
     whereCounter++ ;
     var divID = "div" + divCounter;
     var subDivID = "subdiv" + callerDivID + subdivCounter;
-    var whereID = "where" + callerDivID + whereCounter;
-    //alert(subDivID);
-    //addAllInputs("div1", "text");
     var subdiv = document.createElement('div');
     subdiv.setAttribute("id",subDivID);
     subdiv.setAttribute("name", subDivID);
     //subdiv.setAttribute("type", "div");
     document.getElementById(callerDivID).appendChild(subdiv);
     
-    var endNestID = "endNest" + callerDivID;
-    var newendNest = document.createElement("input");
-    newendNest.setAttribute("id",endNestID);
-    newendNest.setAttribute("type","button");
-    newendNest.setAttribute("name",endNestID);
-    newendNest.setAttribute("value","End Nesting");
-    document.getElementById(callerDivID).appendChild(newendNest);
-    document.getElementById(endNestID).onclick = function(){endNest(callerDivID)};
-    //= "Start Nesting <input type='checkbox' onchange='startNest()'>";
-    //document.getElementById("div1").appendChild(newdiv);
-    var fields= new Array();
-    var x=document.getElementById("where");
-    for (var i=0;i<x.length;i++){ 
-        fields[i]=x.options[i].text;
-    }
-    //createNewOption();
-    createDropdown(subDivID, whereID, fields, "220px");
-    document.getElementById(whereID).onchange = function(){createNewElement(whereID, subDivID)};
-
+    createNewOption(subDivID);
     // Add code for next level nesting
     var nextStartNestID = "nextStartNest" + callerDivID;
     var nextStartNest = document.createElement("input");
     nextStartNest.setAttribute("id",nextStartNestID);
     nextStartNest.setAttribute("type","button");
     nextStartNest.setAttribute("name",nextStartNestID);
-    nextStartNest.setAttribute("value","Next level Nesting");
+    nextStartNest.setAttribute("value","start Sub Nesting");
+    nextStartNest.style.margin="20px";
     document.getElementById(callerDivID).appendChild(nextStartNest);
-    // instead of startNest call some other function which does exactly like endNest
-    // i.e. create new div and call createNewOption
-    document.getElementById(nextStartNestID).onclick = function(){startNest(callerDivID)};
+    document.getElementById(nextStartNestID).onclick = function(){startSubNest(nextStartNestID, subDivID)};
         
     var br = document.createElement("br");
     document.getElementById(callerDivID).appendChild( br );
+    
+    
+    var newEndNestID = "endNest" + callerDivID;
+    var newEndNest = document.createElement("input");
+    newEndNest.setAttribute("id",newEndNestID);
+    newEndNest.setAttribute("type","button");
+    newEndNest.setAttribute("name",newEndNestID);
+    newEndNest.setAttribute("value","End Nesting");
+    document.getElementById(callerDivID).appendChild(newEndNest);
+    document.getElementById(newEndNestID).onclick = function(){endNest(newEndNestID, callerDivID)};
 
     // Remove previous start nest id
-    var x = document.getElementById("startNest" + callerDivID);
+    var x = document.getElementById(callerID);
     x.parentNode.removeChild(x);
 }
 
-function endNest(callerDivID)
+function endNest(callerID, callerDivID)
 {
+    var oldquery=document.getElementById("unique");
+    oldquery.value = oldquery.value + "] ";
     divCounter++;
     var divID = "div" + divCounter;
     nestCounter++;
@@ -223,15 +230,118 @@ function endNest(callerDivID)
     newstartNest.setAttribute("name",startNestID);
     newstartNest.setAttribute("value","start Nesting");
     document.getElementById(divID).appendChild(newstartNest);
-    document.getElementById(startNestID).onclick = function(){startNest(divID)};
-    var x = document.getElementById("endNest" + callerDivID);
+    document.getElementById(startNestID).onclick = function(){startNest(startNestID, divID)};
+    var x = document.getElementById(callerID);
     x.parentNode.removeChild(x);
 }
-/*
-function newQuery()
+
+
+function startSubNest(callerID,callerDivID)
 {
+    nestSubdivCounter++;
+    var subdivID = "nestSubdiv" + nestSubdivCounter;
+    //nestCounter++;
+    var subdiv = document.createElement('div');
+    subdiv.setAttribute("id",subdivID);
+    subdiv.setAttribute("name", subdivID);
+    subdiv.style.margin = "20px";
+    var div = document.getElementById(callerDivID);
+    div.appendChild(subdiv);
+    //div.appendChild(document.createTextNode("SSSSSS"));
+    //document.body.appendChild(msgContainer);
+    //document.getElementById(divID).innerHTML += "Start Nesting&nbsp; ";
+    createNewOption(subdivID);
+    
+    var newStartSubNestID = "nextSubNest" + subdivID;
+    var newStartSubNest = document.createElement("input");
+    newStartSubNest.setAttribute("id",newStartSubNestID);
+    newStartSubNest.setAttribute("type","button");
+    newStartSubNest.setAttribute("name",newStartSubNestID);
+    newStartSubNest.setAttribute("value","start Sub Nesting");
+    newStartSubNest.style.marginLeft="40px";
+    newStartSubNest.style.marginBottom="20px";
+    document.getElementById(callerDivID).appendChild(newStartSubNest);
+    document.getElementById(newStartSubNestID).onclick = function(){startSubNest(newStartSubNestID, subdivID)};
+    
+    var br = document.createElement("br");
+    document.getElementById(callerDivID).appendChild( br );
+    
+    var x = document.getElementById(callerID);
+    x.parentNode.removeChild(x);
+    var newEndSubNestID = "endNest" + subdivID;
+    var newEndSubNest = document.createElement("input");
+    newEndSubNest.setAttribute("id",newEndSubNestID);
+    newEndSubNest.setAttribute("type","button");
+    newEndSubNest.setAttribute("name",newEndSubNestID);
+    newEndSubNest.style.marginLeft="20px";
+    newEndSubNest.setAttribute("value","End Sub Nesting");
+    document.getElementById(callerDivID).appendChild(newEndSubNest);
+    document.getElementById(newEndSubNestID).onclick = function(){endSubNest(newEndSubNestID, callerDivID)};
+    
+    // Remove previous start nest id
+    var x = document.getElementById(callerID);
+    x.parentNode.removeChild(x);
 }
 
+function endSubNest(callerID, callerDivID)
+{
+    var oldquery=document.getElementById("unique");
+    oldquery.value = oldquery.value + "] ";
+    var nextStartNestID = "nextStartNest" + callerDivID;
+    var nextStartNest = document.createElement("input");
+    nextStartNest.setAttribute("id",nextStartNestID);
+    nextStartNest.setAttribute("type","button");
+    nextStartNest.setAttribute("name",nextStartNestID);
+    nextStartNest.setAttribute("value","start Sub Nesting");
+    nextStartNest.style.marginLeft="20px";
+    document.getElementById(callerDivID).appendChild(nextStartNest);
+    document.getElementById(nextStartNestID).onclick = function(){startSubNest(nextStartNestID, callerDivID)};
+    divCounter++;
+    var divID = "div" + divCounter;
+    nestCounter++;
+    var newDiv = document.createElement('div');
+    newDiv.setAttribute("id",divID);
+    newDiv.setAttribute("name", divID);
+    var div = document.getElementById('div1');
+    div.parentNode.appendChild(newDiv);
+    //div.appendChild(document.createTextNode("SSSSSS"));
+    //document.body.appendChild(msgContainer);
+    //document.getElementById(divID).innerHTML += "Start Nesting&nbsp; ";
+    var x = document.getElementById(callerID);
+    x.parentNode.removeChild(x);
+}
+
+
+function makeQuery(attributeType, inputID, logicID)
+{
+    var equals=["allResidents.uid","allResidents.gender","allResidents.type","allResidents.emergencyPh","allResidents.fbLink","allResidents.personalPh","interestedIn","allResidents.bloodGroup","allResidents.dob"];
+    var contain=["allResidents.name","allResidents.fbLink","allResidents.interestedIn"];
+    var oneQuery;
+    if(attributeType && logicID && inputID){
+        var value = document.getElementById(inputID).value;
+        if( equals.indexOf(attributeType) != -1){
+            oneQuery = "[ " + attributeType + " , " + value + " , == ] , ";
+        }
+        else if( contain.indexOf(attributeType) != -1){
+         oneQuery = "[ " + attributeType + " , " + value + " , contains ] , ";
+        }
+        else{
+            oneQuery = " ";
+        }
+        var oldquery=document.getElementById("unique");
+        oldquery.value = oldquery.value + oneQuery;
+        var operator = document.getElementById("operator");
+        var newop = document.getElementById(logicID).value;
+        operator.value = operator.value + newop + " , " ;
+    }
+    else{
+        alert(attributeType);
+        var oneQuery = "[ ";
+        var oldquery=document.getElementById("unique");
+        oldquery.value = oldquery.value + oneQuery;
+    }
+}
+/*
 // Do when internet is working
 function redirect()
 {

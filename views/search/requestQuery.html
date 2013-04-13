@@ -1,6 +1,8 @@
 {{extend 'layout.html'}}
 <h2>{{='Search'.capitalize()}}</h2>
 <script src="{{=URL('static','js/querysearch.js')}}"></script>
+Your Query&nbsp;&nbsp;<input type="text" id="unique" name="unique"/><br>
+Logical Operators&nbsp;&nbsp;<input type="text" id="operator" name="operator"/><br>
 <select id="where" name="where" style="display:none;">
 <option> </option>
     {{for item in fields:}}
@@ -8,6 +10,6 @@
         {{pass}}
     </select>
 <div id="div1" name="div1">
-    <input type="button" id="startNestdiv1" name="startNestdiv1" value="Start Nesting" onclick="startNest('div1')"/>
-    <!--<input type="submit" value="search" onchange="redirect()" ><br><br></input>-->
+    <input type="button" id="startNestdiv1" name="startNestdiv1" value="Start Nesting" onclick="startNest('startNestdiv1','div1')"/>
+    <input type="button" value="search" onclick="redirect()" ><br><br></input>
 </div>
