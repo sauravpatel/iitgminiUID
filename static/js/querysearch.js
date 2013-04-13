@@ -1,4 +1,7 @@
-var whereCounter = 1;
+var divCounter = 1;
+var nestCounter = 0;
+var subdivCounter = 0;
+var whereCounter = 0;
 var inputCounter = 0;
 var counter = 0;
 var counterText = 0;
@@ -28,110 +31,99 @@ function addAllInputs(divName, inputType){
     document.getElementById(divName).appendChild(newdiv);
 }
 
-function createNewElement(id)
+function createNewElement(callerID,callerDivID)
 {
     var inputRequired = true;
     //document.getElementById(id).disabled=true;
-    var ID = "input" + counter;
+    var inputID = "input" + callerID;
     var inputType = "text"
-    var currWhereID = "where" + counter;
-    var attribute = document.getElementById( currWhereID );
-    if ( attribute){
+    var attribute = document.getElementById( callerID );
+    //if ( attribute){
         var attributeType = attribute.options[attribute.selectedIndex].text;
         // give special treatement to some attributes
         if ( attributeType.search( 'age' ) != -1 ){
-            var comparatorID = "comparator" + counter;
             var options = new Array("==","<",">");
-            createDropdown( comparatorID, options, "80px" );
+            createDropdown( callerDivID, inputID, options, "80px" );
         }
         if ( attributeType.search( 'gender' ) != -1 ){
             inputRequired = false;
-            var comparatorID = "input" + counter;
             var options = new Array("male","female");
-            createDropdown( comparatorID, options, "300px" );
+            createDropdown( callerDivID, inputID, options, "300px" );
         }
         if ( attributeType.search( 'type' ) != -1 ){
             inputRequired = false;
-            var comparatorID = "input" + counter;
             var options = new Array("student","faculty","staff","others");
-            createDropdown( comparatorID, options, "300px" );
+            createDropdown( callerDivID, inputID, options, "300px" );
         }
         if ( attributeType.search( 'bloodGroup' ) != -1 ){
             inputRequired = false;
-            var comparatorID = "input" + counter;
             var options = new Array("AB+","AB-","O-","O+","A+","A-","B+","B-","Bombay");
-            createDropdown( comparatorID, options, "300px" );
+            createDropdown( callerDivID, inputID, options, "300px" );
         }
         if ( attributeType.search( 'hostel' ) != -1 ){
             inputRequired = false;
-            var comparatorID = "input" + counter;
             var options = new Array("Barak","Brahmaputra","Dibang","Dihing","Kameng","Kapili","Manas","Siang","Subansiri","Umiam");
-            createDropdown( comparatorID, options, "300px" );
+            createDropdown( callerDivID, inputID, options, "300px" );
         }
         if ( attributeType.search( 'post' ) != -1 ){
             inputRequired = false;
-            var comparatorID = "input" + counter;
             var options = new Array("assistant Professor","Associate","Professor");
-            createDropdown( comparatorID, options, "300px" );
+            createDropdown( callerDivID, inputID, options, "300px" );
         }
         if ( attributeType.search( 'dob' ) != -1 ){
             inputType = "date";
         }
 
-    }
-    if(id != currWhereID){
+    //}
+    if(document.getElementById(inputID) && inputRequired){
         // code to change input type needs to be WRITTEN here
-        //alert( id + "    yes::" + currWhereID);
+        alert( "You cannot change selection now.");
 
     }
     else if (inputRequired){
         inputRequired = false;
         var newdiv = document.createElement("input");
-        newdiv.setAttribute("name", ID);
-        newdiv.setAttribute("id", ID);
+        newdiv.setAttribute("name", inputID);
+        newdiv.setAttribute("id", inputID);
         newdiv.setAttribute("type", inputType);
         newdiv.style.width = "300px";
         //newdiv.innerHTML = "is " + " <br><input type='text' id=" + ID + " name=" + ID + ">";
-        document.queryform.appendChild(newdiv);
+        document.getElementById(callerDivID).appendChild(newdiv);
     }
     if( !inputRequired){
         // create button for and/or
-        var addFilterID = "addifilter"+counter;
+        var logicID = "logic"+ callerID;
         var option = new Array('','AND','OR');
-        createDropdown( addFilterID, option, "100px");
-        document.getElementById(addFilterID).onchange = function(){createNewOption()};
-        br = document.createElement("br");
-        document.queryform.appendChild( br );
+        createDropdown( callerDivID, logicID, option, "100px");
+        alert("TT    :" + callerDivID);
+        document.getElementById(logicID).onchange = function(){createNewOption(callerDivID)};
+        var br = document.createElement("br");
+        document.getElementById(callerDivID).appendChild( br );
         //createNewOption();
         var node=document.createTextNode(" ");
-        document.queryform.appendChild(node);
+        document.getElementById(callerDivID).appendChild(node);
     }
 }
 
-function createNewOption()
+function createNewOption(callerDivID)
 {
-    counter++;
-    var ID = "where" + counter;
-    var curraddFilterID = "addfilter" + (counter-1);
-    var attribute = document.getElementById( curraddFilterID );
-    if ( attribute){
-        alert(curraddFilterID);
+    alert(callerDivID);
+    whereCounter++;
+    var whereID = "where" + callerDivID + whereCounter;
+    //ID = "where11";
+    var fields= new Array();
+    var x=document.getElementById("where");
+    for (var i=0;i<x.length;i++){ 
+        fields[i]=x.options[i].text;
     }
-    else{
-        var fields= new Array();
-        var x=document.getElementById("where0");
-        for (var i=0;i<x.length;i++){ 
-            fields[i]=x.options[i].text;
-        }
-        createDropdown(ID, fields, "220px");
-        document.getElementById(ID).onchange = function(){createNewElement(ID)};
-    }
+    createDropdown(callerDivID, whereID, fields, "220px");
+    document.getElementById(whereID).onchange = function(){createNewElement(whereID, callerDivID)};
 }
 
 
-function createDropdown( id , fields, width)
+function createDropdown( subDivID, fieldid , fields, width)
 {
-    var ID = id;
+    var ID = fieldid;
     var select = document.createElement("select");
     select.setAttribute("name", ID);
     select.setAttribute("id", ID);
@@ -144,5 +136,105 @@ function createDropdown( id , fields, width)
         option.innerHTML = fields[i];
         select.appendChild(option);
     }
-    document.queryform.appendChild(select);
+    document.getElementById(subDivID).appendChild(select);
 }
+
+function insertQuery(query)
+{
+    var textFieldID = "queryOutput";
+    var queryText = document.getElementById(textFieldID).value;
+    var newValue = queryText + query;
+    document.getElementById(textFieldID).value=newValue;
+    //document.getElementById(textFieldID).style.border = "4px solid red";
+}
+
+function startNest(callerDivID)
+{
+    nestCounter++;
+    subdivCounter++;
+    whereCounter++ ;
+    var divID = "div" + divCounter;
+    var subDivID = "subdiv" + callerDivID + subdivCounter;
+    var whereID = "where" + callerDivID + whereCounter;
+    //alert(subDivID);
+    //addAllInputs("div1", "text");
+    var subdiv = document.createElement('div');
+    subdiv.setAttribute("id",subDivID);
+    subdiv.setAttribute("name", subDivID);
+    //subdiv.setAttribute("type", "div");
+    document.getElementById(callerDivID).appendChild(subdiv);
+    
+    var endNestID = "endNest" + callerDivID;
+    var newendNest = document.createElement("input");
+    newendNest.setAttribute("id",endNestID);
+    newendNest.setAttribute("type","button");
+    newendNest.setAttribute("name",endNestID);
+    newendNest.setAttribute("value","End Nesting");
+    document.getElementById(callerDivID).appendChild(newendNest);
+    document.getElementById(endNestID).onclick = function(){endNest(callerDivID)};
+    //= "Start Nesting <input type='checkbox' onchange='startNest()'>";
+    //document.getElementById("div1").appendChild(newdiv);
+    var fields= new Array();
+    var x=document.getElementById("where");
+    for (var i=0;i<x.length;i++){ 
+        fields[i]=x.options[i].text;
+    }
+    //createNewOption();
+    createDropdown(subDivID, whereID, fields, "220px");
+    document.getElementById(whereID).onchange = function(){createNewElement(whereID, subDivID)};
+
+    // Add code for next level nesting
+    var nextStartNestID = "nextStartNest" + callerDivID;
+    var nextStartNest = document.createElement("input");
+    nextStartNest.setAttribute("id",nextStartNestID);
+    nextStartNest.setAttribute("type","button");
+    nextStartNest.setAttribute("name",nextStartNestID);
+    nextStartNest.setAttribute("value","Next level Nesting");
+    document.getElementById(callerDivID).appendChild(nextStartNest);
+    // instead of startNest call some other function which does exactly like endNest
+    // i.e. create new div and call createNewOption
+    document.getElementById(nextStartNestID).onclick = function(){startNest(callerDivID)};
+        
+    var br = document.createElement("br");
+    document.getElementById(callerDivID).appendChild( br );
+
+    // Remove previous start nest id
+    var x = document.getElementById("startNest" + callerDivID);
+    x.parentNode.removeChild(x);
+}
+
+function endNest(callerDivID)
+{
+    divCounter++;
+    var divID = "div" + divCounter;
+    nestCounter++;
+    var newDiv = document.createElement('div');
+    newDiv.setAttribute("id",divID);
+    newDiv.setAttribute("name", divID);
+    var div = document.getElementById('div1');
+    div.parentNode.appendChild(newDiv);
+    //div.appendChild(document.createTextNode("SSSSSS"));
+    //document.body.appendChild(msgContainer);
+    //document.getElementById(divID).innerHTML += "Start Nesting&nbsp; ";
+    var startNestID = "startNest" + divID;
+    var newstartNest = document.createElement("input");
+    newstartNest.setAttribute("id",startNestID);
+    newstartNest.setAttribute("type","button");
+    newstartNest.setAttribute("name",startNestID);
+    newstartNest.setAttribute("value","start Nesting");
+    document.getElementById(divID).appendChild(newstartNest);
+    document.getElementById(startNestID).onclick = function(){startNest(divID)};
+    var x = document.getElementById("endNest" + callerDivID);
+    x.parentNode.removeChild(x);
+}
+/*
+function newQuery()
+{
+}
+
+// Do when internet is working
+function redirect()
+{
+    self.location="showResult";
+}
+*/

@@ -14,15 +14,6 @@ def index():
 # Parameters taken in order: stud, fac, staff, other
 @auth.requires_login()
 def getFieldList( stud, fac, staff, other ):
-#################################################################
-# COMMENT THIS WHEN YOU DEPLOY THE APPLICATION
-################################################################
-    #stud = 1
-    #fac = 1
-    #staff = 1
-    #other = 1
-    #response.flash = str(stud);
-###############################################################
     query = dbUid.allResidents.uid == auth.user.username
     rows = dbUid ( query ).select()
     userPrivilegeNum = 0
@@ -74,26 +65,105 @@ def requestQuery():
 # Add argument to the function call
 def generateQuery():
     filterNum = (len(request.vars)) /2;
-    pairList =  []
     index = 0;
+    queries = []
+    queries.append ( dbUid.allResidents.id > 0 )
     while index < filterNum:
-        key = request.vars['where'+str(index)].strip('\r\n')
-        value = request.vars['input'+str(index)].strip('\n\r')
-        pairList.append((key,value))
-        index+=1
-    pairList = [ ('allResidents.name', 'AMOGH'), ('allResidents.interestedIn', 'Machine Learning') ]
+        for table in dbUid:
+            for field in table:
+                if ( index < filterNum ):
+                    key = request.vars['where'+str(index)].strip('\r\n')
+                    value = request.vars['input'+str(index)].strip('\n\r')
+                    if ( key == str ( field ) ):
+                        queries.append( field.contains( value ) )
+                        index+=1
+    queryAnd = reduce ( lambda a,b: ( a&b ), queries )
+    rows = dbUid( queryAnd ).select()
+
+    # Result has been populated till here.
+    # Now do what you want to do with it.
+    # Below is just a temporary way to check while debugging. Comment this later
     tempOut = ''
-    '''
-    This is in the case if I decide to take the entries in RAM and sort in memory
-    with python regex and maybe even NLTK
-    tableNamesList = []
-    for fieldName, value in pairList:
-        tableNamesList.append( fieldName.split('.')[0] )
-    tableNamesList = list ( set ( tableNamesList ) )
-    '''
-    query = 'dbUid.allResidents.id > 0'
-    queryString = 'dbUid ( ' + query + ' ).select()'
-#    rows = exec ( queryString )
-#    for row in rows:
-#        tempOut = tempOut + row.uid
-    return queryString
+    for row in rows:
+        tempOut += str(row.id) + " , "
+    return tempOut
+
+# Function returns all fields that can be searched using basic search
+# This should contain only fields accessible by everybody and that makes
+# sense for the user to search
+def findFieldListBasicSearch():
+    fieldList = [   'allResidents.name',
+                    'allResidents.emergencyPh',
+                    'allResidents.fbLink',
+#                    'allResidents.dob',
+#                    'allResidents.personalPh',
+                    'allResidents.interestedIn',
+                    'allResidents.bloodGroup',
+                    'faculty.webmailId',
+                    'faculty.dept',
+                    'faculty.post',
+                    'faculty.homepageLink',
+#                    'faculty.officePh',
+                    'post.postName',
+                    'post.webmailId',
+                    'post.section',
+                    'staff.webmailId',
+                    'staff.address',
+                    'staff.post',
+                    'staff.section',
+                    'student.webmailId',
+                    'student.hostel',
+                    'student.rollNo',
+                    'vehicle.regNo',
+                    'vehicle.type',
+                    'vehicle.instiRegNo'
+               ]
+    return fieldList
+
+def orQueryOfSameTable( queryList ):
+    queryFinalList = []
+    for oneTableList in queryList:
+        queryFinalList.append( reduce ( lambda a,b: (a|b), oneTableList ) )
+    return queryFinalList
+# This function strips stuff and returns the query that should be searched in
+# the DB itself. ie. word stemming, stripping of punctuation and stop words etc
+# have to be done here only
+def cleanSearchQuery(query):
+    cleanedQuery = query
+    return cleanedQuery
+
+###############################################################
+# Amogh's code for basic searching
+# This is the page having only one text box and will get the
+# query and proceed appropriately
+##############################################################
+def basicSearch():
+    # Assume the query comes in string called search
+    search = "ma"
+    cleanedSearchQuery = cleanSearchQuery( search )
+    queryList = []
+    searchableFieldList = findFieldListBasicSearch()
+    for table in dbUid:
+        listOfOneTable = []
+        for field in table:
+            if ( str(field) in searchableFieldList ):
+                listOfOneTable.append( field.contains( cleanedSearchQuery ) )
+            pass
+        if len( listOfOneTable ) >= 1 :
+            queryList.append( listOfOneTable )
+        pass
+    query = orQueryOfSameTable ( queryList )
+    rows = []
+    for queryOne in query:
+        rows.append( dbUid( queryOne ).select() )
+# This is just temporary debugging and error checking
+    tempOut = ''
+    for row in rows:
+        for entry in row:
+            tempOut += str(entry.id) +  ' ,\n '
+    return tempOut
+
+
+def showResult():
+    response.flash = "redirection complete."
+    return dict()
